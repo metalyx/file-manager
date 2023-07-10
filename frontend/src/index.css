@@ -2,6 +2,13 @@
     font-family: unset;
 }
 
+button {
+    appearance: none;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+}
+
 html,
 body,
 div,

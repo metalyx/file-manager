@@ -58,18 +58,12 @@ function App() {
                     <Layout>
                         <Routes>
                             <Route path='/' element={<Main />} />
-                            {!isUserLoggedIn && (
-                                <>
-                                    <Route
-                                        path='/createAccount'
-                                        element={<CreateAccount />}
-                                    />
-                                    <Route
-                                        path='/signIn'
-                                        element={<SignIn />}
-                                    />
-                                </>
-                            )}
+
+                            <Route
+                                path='/createAccount'
+                                element={<CreateAccount />}
+                            />
+                            <Route path='/signIn' element={<SignIn />} />
 
                             <Route path='/*' />
                         </Routes>

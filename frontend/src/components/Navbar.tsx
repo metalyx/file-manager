@@ -113,8 +113,6 @@ function ResponsiveAppBar() {
                     <Typography
                         variant='h5'
                         noWrap
-                        component='button'
-                        onClick={() => navigate('/')}
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -126,7 +124,7 @@ function ResponsiveAppBar() {
                             textDecoration: 'none',
                         }}
                     >
-                        FileManager
+                        <Link to='/'>FileManager</Link>
                     </Typography>
                     <Box
                         sx={{

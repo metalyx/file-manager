@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import userReducer from './reducers/UserSlice';
+import fileReducer from './reducers/FileSlice';
 // import bookReducer from './reducers/BookSlice';
 // import bookingReducer from './reducers/BookingSlice';
 
 const rootReducer = combineReducers({
     userReducer,
+    fileReducer,
     // bookReducer,
     // bookingReducer,
 });
