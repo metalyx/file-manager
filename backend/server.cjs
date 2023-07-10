@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./routes/auth.routes.cjs');
+const fileRouter = require('./routes/file.routes.cjs');
 
 dotenv.config({ path: __dirname + '/.env' });
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.static('build_frontend'));
 
 app.use('/api/auth', authRouter);
+app.use('/api/files', fileRouter);
 
 const start = async () => {
     try {

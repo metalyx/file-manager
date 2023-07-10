@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const success = require('../helpers/success.cjs');
 const { check, validationResult } = require('express-validator');
+const authMiddleware = require('../middlewares/auth.middleware.cjs');
 
 const router = new Router();
 
@@ -50,26 +51,63 @@ router.post(
     }
 );
 
-router.post('/login', async (req, res) => {
+router.post(
+    '/login',
+    [
+        check('email', 'Incorrect email').isEmail(),
+        check(
+            'password',
+            'Password must be more than 3 and shorter than 12 characters'
+        ).isLength({ min: 3, max: 12 }),
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return clientError(res, errors);
+            }
+
+            const { email, password } = req.body;
+
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const isPassValid = bcrypt.compareSync(password, user.password);
+
+            if (!isPassValid) {
+                return res.status(400).json({ message: 'Invalid password' });
+            }
+
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+                expiresIn: '1h',
+            });
+
+            return res.json({
+                token,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    diskSpace: user.diskSpace,
+                    usedSpace: user.usedSpace,
+                    avatar: user.avatar,
+                },
+            });
+        } catch (e) {
+            return serverError(res, e);
+        }
+    }
+);
+
+router.get('/auth', authMiddleware, async (req, res) => {
     try {
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const isPassValid = bcrypt.compareSync(password, user.password);
-
-        if (!isPassValid) {
-            return res.status(400).json({ message: 'Invalid password' });
-        }
-
+        const user = await User.findOne({ _id: req.user.id });
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
-
         return res.json({
             token,
             user: {
@@ -81,7 +119,8 @@ router.post('/login', async (req, res) => {
             },
         });
     } catch (e) {
-        return serverError(res, e);
+        console.log(e);
+        res.send({ message: 'Server error' });
     }
 });
 
