@@ -13,10 +13,7 @@ import { unsetToken } from './helpers/unsetToken';
 import Main from './components/Main';
 
 function App() {
-    const [isLoading, setIsLoading] = useState(false);
-    const isUserLoggedIn = useAppSelector(
-        (state) => state.userReducer.isLoggedIn
-    );
+    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useAppDispatch();
     const { setUser, unsetUser } = userSlice.actions;
     const navigate = useNavigate();
