@@ -40,7 +40,7 @@ const DirectFile = () => {
                 data = response.data;
             } else {
                 const response = await Axios.get<iFile>(
-                    `${BASE_URL}/files/public/${fileId}`
+                    `/files/public/${fileId}`
                 );
                 data = response.data;
             }
