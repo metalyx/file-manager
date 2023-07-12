@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "build": "cd frontend/ && npm run build && cd .. && cd backend/ && npm run build && cd ..",
+        "build": "cd frontend/ && npm run build && cd ..",
         "start": "cd backend/ && npm run start",
         "dev": "concurrently \"cd frontend/ && npm run dev\" \"cd backend/ && npm run dev\"",
         "install": "cd frontend/ && npm i && cd .. && cd backend/ && npm i && cd .."

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Axios } from '../helpers/Axios';
-import { saveAs } from 'file-saver';
 import { iFile } from '../models/File';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fileSlice } from '../store/reducers/FileSlice';
@@ -9,12 +8,8 @@ import {
     Box,
     CircularProgress,
     List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
     Typography,
     Dialog,
-    Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FileCard from './FileCard';
@@ -146,6 +141,7 @@ const Main = () => {
 
     const deleteFileHandler = async (fileId: string) => {
         try {
+            setIsInitialLoading(true);
             await Axios.delete(`/files/${fileId}`);
             const response = await Axios.get('/auth/auth');
 
@@ -156,8 +152,10 @@ const Main = () => {
                 })
             );
             dispatch(deleteFile(fileId));
+            setIsInitialLoading(false);
         } catch (e) {
             console.error(e);
+            setIsInitialLoading(false);
         }
     };
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CreateAccount from './components/CreateAccount';
 import Navbar from './components/Navbar';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import Layout from './components/Layout';
 import { checkAuth } from './helpers/checkAuth';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { unsetToken } from '../helpers/unsetToken';
 import { useAppDispatch } from '../hooks/redux';
 import { userSlice } from '../store/reducers/UserSlice';

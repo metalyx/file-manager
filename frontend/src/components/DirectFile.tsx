@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { iFile } from '../models/File';
 import axios from 'axios';
 import { Box, CircularProgress, Alert } from '@mui/material';
-import FileCard from './FileCard';
 import DirectFileCard from './DirectFileCard';
 import { BASE_URL } from '../constants';
 
@@ -20,7 +19,6 @@ const DirectFile = () => {
         return <></>;
     }
 
-    // const [currentFile, setCurrentFile] = useState<iFile>();
     const [networkState, setNetworkState] = useState<DirectFileComponentState>({
         isLoading: true,
         error: '',
