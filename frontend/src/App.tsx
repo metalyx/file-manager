@@ -11,12 +11,17 @@ import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { setToken } from './helpers/setToken';
 import { unsetToken } from './helpers/unsetToken';
 import Main from './components/Main';
+import DirectFile from './components/DirectFile';
+import NotFound from './components/NotFound';
+import Logout from './components/Logout';
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useAppDispatch();
+    const userIsLoggedIn = useAppSelector(
+        (state) => state.userReducer.isLoggedIn
+    );
     const { setUser, unsetUser } = userSlice.actions;
-    const navigate = useNavigate();
 
     useEffect(() => {
         setIsLoading(true);
@@ -28,7 +33,8 @@ function App() {
                 setIsLoading(false);
                 dispatch(unsetUser());
                 unsetToken();
-                return navigate('/signIn');
+                // return navigate('/signIn');
+                return;
             }
 
             dispatch(
@@ -40,7 +46,6 @@ function App() {
 
             setToken(result.token);
             setIsLoading(false);
-            return navigate('/');
         };
 
         checkToken();
@@ -49,7 +54,7 @@ function App() {
     return (
         <>
             {isLoading && <CircularProgress />}
-            {!isLoading && (
+            {!isLoading && userIsLoggedIn && (
                 <>
                     <Navbar />
                     <Layout>
@@ -62,7 +67,32 @@ function App() {
                             />
                             <Route path='/signIn' element={<SignIn />} />
 
-                            <Route path='/*' />
+                            <Route
+                                path='/files/:fileId'
+                                element={<DirectFile />}
+                            />
+                            <Route path='/logout' element={<Logout />} />
+                            <Route path='/*' element={<NotFound />} />
+                        </Routes>
+                    </Layout>
+                </>
+            )}
+            {!isLoading && !userIsLoggedIn && (
+                <>
+                    <Navbar />
+                    <Layout>
+                        <Routes>
+                            <Route
+                                path='/createAccount'
+                                element={<CreateAccount />}
+                            />
+                            <Route path='/signIn' element={<SignIn />} />
+
+                            <Route
+                                path='/files/:fileId'
+                                element={<DirectFile />}
+                            />
+                            <Route path='/*' element={<SignIn />} />
                         </Routes>
                     </Layout>
                 </>

@@ -7,6 +7,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import React from 'react';
 import { iFile } from '../models/File';
 import { downloadFiles } from '../helpers/downloadFile';
+import { formatBytes } from '../helpers/formatBytes';
 
 interface iFileCard {
     file: iFile;
@@ -26,7 +27,7 @@ const FileCard: React.FC<iFileCard> = ({
             </ListItemIcon>
             <ListItemText
                 primary={file.originalname}
-                secondary={`${file.size} bytes`}
+                secondary={`${formatBytes(file.size)}`}
             />
             <ListItemIcon>
                 <button

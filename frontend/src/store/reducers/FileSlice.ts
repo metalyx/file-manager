@@ -24,6 +24,14 @@ export const fileSlice = createSlice({
                 (file) => file._id !== action.payload
             );
         },
+        changeFile: (state, action: PayloadAction<iFile>) => {
+            state.userFiles = state.userFiles.map((file) => {
+                if (file._id === action.payload._id) {
+                    return action.payload;
+                }
+                return file;
+            });
+        },
     },
 });
 

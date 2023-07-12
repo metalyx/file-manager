@@ -14,10 +14,14 @@ import {
     ListItemText,
     Typography,
     Dialog,
+    Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import FileCard from './FileCard';
 import FileSettingsCard from './FileSettingsCard';
+import { userSlice } from '../store/reducers/UserSlice';
+import { LoadingButton } from '@mui/lab';
+import { formatBytes } from '../helpers/formatBytes';
 
 const Main = () => {
     const dispatch = useAppDispatch();
@@ -25,24 +29,25 @@ const Main = () => {
     const isUserLoggedIn = useAppSelector(
         (state) => state.userReducer.isLoggedIn
     );
+    const availableSpace = useAppSelector(
+        (state) => state.userReducer.diskSpace - state.userReducer.usedSpace
+    );
     const { addFile, setFiles, deleteFile } = fileSlice.actions;
+    const setUser = userSlice.actions.setUser;
 
     const inputRef = useRef(null);
-
     const navigate = useNavigate();
 
     const [fileUploadingState, setFileUploadingState] = useState({
         isLoading: false,
         isSizeLimitReached: false,
-        isFailed: false,
+        error: '',
         isSuccess: false,
     });
 
     const [isInitialLoading, setIsInitialLoading] = useState(true);
-
     const [isOpenedSharingModal, setIsOpenedSharingModal] = useState(false);
-
-    const [modalFile, setFileModal] = useState<iFile>();
+    const [modalFile, setFileModal] = useState<iFile['_id']>();
 
     useEffect(() => {
         const fetchAllUserFiles = async () => {
@@ -72,7 +77,7 @@ const Main = () => {
         if (e.target.files !== null) {
             setFileUploadingState({
                 isLoading: true,
-                isFailed: false,
+                error: '',
                 isSizeLimitReached: false,
                 isSuccess: false,
             });
@@ -83,7 +88,7 @@ const Main = () => {
             if (file.size > 1024 * 1024 * 15) {
                 setFileUploadingState({
                     isLoading: false,
-                    isFailed: false,
+                    error: '',
                     isSizeLimitReached: true,
                     isSuccess: false,
                 });
@@ -95,7 +100,7 @@ const Main = () => {
             formData.append('file', file);
 
             try {
-                const response = await Axios.post<iFile>(
+                const { data } = await Axios.post<iFile>(
                     '/files/upload',
                     formData,
                     {
@@ -105,28 +110,52 @@ const Main = () => {
                     }
                 );
 
+                const response = await Axios.get('/auth/auth');
+
+                dispatch(addFile(data));
+                dispatch(
+                    setUser({
+                        ...response.data.user,
+                        isLoggedIn: true,
+                    })
+                );
+
                 setFileUploadingState({
                     isLoading: false,
-                    isFailed: false,
+                    error: '',
                     isSizeLimitReached: false,
                     isSuccess: true,
                 });
-                dispatch(addFile(response.data));
-            } catch (e) {
+            } catch (e: any) {
                 console.log(e);
+                let error = 'Server error, try again later...';
+
+                if (typeof e?.response?.data?.message === 'string') {
+                    error = e.response.data.message;
+                }
+
                 setFileUploadingState({
                     isLoading: false,
-                    isFailed: true,
+                    error,
                     isSizeLimitReached: false,
                     isSuccess: true,
                 });
             }
+            clearInput();
         }
     };
 
     const deleteFileHandler = async (fileId: string) => {
         try {
             await Axios.delete(`/files/${fileId}`);
+            const response = await Axios.get('/auth/auth');
+
+            dispatch(
+                setUser({
+                    ...response.data.user,
+                    isLoggedIn: true,
+                })
+            );
             dispatch(deleteFile(fileId));
         } catch (e) {
             console.error(e);
@@ -141,23 +170,40 @@ const Main = () => {
     };
 
     const openPermissionsPopup = (fileId: iFile['_id']) => {
-        setFileModal(userFiles.find((file) => file._id === fileId));
+        setFileModal(fileId);
         setIsOpenedSharingModal(true);
     };
 
     return (
         <Box>
+            <Box sx={{ display: 'flex', my: 2 }}>
+                <Typography variant='subtitle1'>
+                    Available space: {formatBytes(availableSpace)}
+                </Typography>
+            </Box>
             {fileUploadingState.isSizeLimitReached && (
                 <Alert severity='error' sx={{ mb: 2 }}>
-                    File size cannot me more than 15.72 MB
+                    File size cannot be more than 15.72 MB
                 </Alert>
             )}
-            {fileUploadingState.isFailed && (
+            {fileUploadingState.error.length > 0 && (
                 <Alert severity='error' sx={{ mb: 2 }}>
-                    File uploading failed, try again later.
+                    {fileUploadingState.error}
                 </Alert>
             )}
-            <input type='file' ref={inputRef} onChange={handleFileSelected} />
+            <LoadingButton
+                variant='contained'
+                component='label'
+                loading={fileUploadingState.isLoading}
+            >
+                Upload File
+                <input
+                    type='file'
+                    ref={inputRef}
+                    onChange={handleFileSelected}
+                    hidden
+                />
+            </LoadingButton>
             {userFiles.length === 0 && !isInitialLoading && (
                 <Typography variant='h5' component='div' sx={{ mt: 2 }}>
                     No files here, yet!
@@ -189,7 +235,7 @@ const Main = () => {
                 open={isOpenedSharingModal}
                 onClose={() => setIsOpenedSharingModal(false)}
             >
-                <FileSettingsCard file={modalFile} />
+                {modalFile && <FileSettingsCard fileId={modalFile} />}
             </Dialog>
         </Box>
     );

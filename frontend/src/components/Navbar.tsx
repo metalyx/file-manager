@@ -9,15 +9,24 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAppSelector } from '../hooks/redux';
 
 function ResponsiveAppBar() {
-    const navigate = useNavigate();
+    const userIsLoggedIn = useAppSelector(
+        (state) => state.userReducer.isLoggedIn
+    );
 
-    const pages = [
-        { text: 'Sign In', route: '/signIn' },
-        { text: 'Create Account', route: '/createAccount' },
-    ];
+    const pages = React.useCallback(() => {
+        if (!userIsLoggedIn) {
+            return [
+                { text: 'Sign In', route: '/signIn' },
+                { text: 'Create Account', route: '/createAccount' },
+            ];
+        } else {
+            return [{ text: 'LogOut', route: '/logout' }];
+        }
+    }, [userIsLoggedIn]);
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -93,7 +102,7 @@ function ResponsiveAppBar() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
+                            {pages().map((page) => (
                                 <MenuItem
                                     key={page.text}
                                     onClick={handleCloseNavMenu}
@@ -132,7 +141,7 @@ function ResponsiveAppBar() {
                             display: { xs: 'none', md: 'flex', gap: '20px' },
                         }}
                     >
-                        {pages.map((page) => (
+                        {pages().map((page) => (
                             <Box
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                                 key={page.text}
