@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CreateAccount from './components/CreateAccount';
 import Navbar from './components/Navbar';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import Layout from './components/Layout';
 import { checkAuth } from './helpers/checkAuth';
@@ -60,19 +60,20 @@ function App() {
                     <Layout>
                         <Routes>
                             <Route path='/' element={<Main />} />
-
+                            <Route path='/signIn' element={<SignIn />} />
                             <Route
                                 path='/createAccount'
                                 element={<CreateAccount />}
                             />
-                            <Route path='/signIn' element={<SignIn />} />
-
                             <Route
                                 path='/files/:fileId'
                                 element={<DirectFile />}
                             />
                             <Route path='/logout' element={<Logout />} />
-                            <Route path='/*' element={<NotFound />} />
+                            <Route
+                                path='*'
+                                element={<Navigate to='/' replace />}
+                            />
                         </Routes>
                     </Layout>
                 </>
@@ -82,17 +83,20 @@ function App() {
                     <Navbar />
                     <Layout>
                         <Routes>
+                            <Route index path='/signIn' element={<SignIn />} />
                             <Route
                                 path='/createAccount'
                                 element={<CreateAccount />}
                             />
-                            <Route path='/signIn' element={<SignIn />} />
 
                             <Route
                                 path='/files/:fileId'
                                 element={<DirectFile />}
                             />
-                            <Route path='/*' element={<SignIn />} />
+                            <Route
+                                path='*'
+                                element={<Navigate to='/signIn' replace />}
+                            />
                         </Routes>
                     </Layout>
                 </>

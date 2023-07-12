@@ -165,7 +165,29 @@ router.get('/public/:fileId', async (req, res) => {
         }
 
         if (file.public !== true) {
-            return clientError(res, 'This file is private.');
+            // return clientError(res, 'This file is private.');
+            const token = req?.headers?.authorization?.split(' ')[1];
+            if (!token) {
+                return res.status(401).json({
+                    message: `You don't have permission to download this file.`,
+                });
+            }
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = decoded;
+
+            const userId = req.user.id;
+
+            if (!userId) {
+                return res
+                    .status(401)
+                    .json({ message: `This file is private.` });
+            }
+
+            if (file.userId.toString() !== userId) {
+                return res
+                    .status(401)
+                    .json({ message: `This file is private.` });
+            }
         }
 
         res.status(200).json(file);
@@ -191,11 +213,9 @@ router.get('/buffer/:fileId', async (req, res) => {
         if (!file.public) {
             const token = req?.headers?.authorization?.split(' ')[1];
             if (!token) {
-                return res
-                    .status(401)
-                    .json({
-                        message: `You don't have permission to download this file.`,
-                    });
+                return res.status(401).json({
+                    message: `You don't have permission to download this file.`,
+                });
             }
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;

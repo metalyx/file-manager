@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Box, CircularProgress, Alert } from '@mui/material';
 import DirectFileCard from './DirectFileCard';
 import { BASE_URL } from '../constants';
+import { Axios } from '../helpers/Axios';
 
 interface DirectFileComponentState {
     isLoading: boolean;
@@ -27,9 +28,22 @@ const DirectFile = () => {
 
     const fetchFile = async () => {
         try {
-            const { data } = await axios.get<iFile>(
-                `${BASE_URL}/files/public/${fileId}`
-            );
+            const token = window.localStorage.getItem('token');
+
+            let data;
+
+            if (!token) {
+                const response = await axios.get<iFile>(
+                    `${BASE_URL}/files/public/${fileId}`
+                );
+
+                data = response.data;
+            } else {
+                const response = await Axios.get<iFile>(
+                    `${BASE_URL}/files/public/${fileId}`
+                );
+                data = response.data;
+            }
 
             setNetworkState({
                 isLoading: false,

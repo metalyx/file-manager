@@ -8,3 +8,7 @@ export const Axios = axios.create({
 export const setTokenAxios = (token: string) => {
     Axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 };
+
+export const unsetTokenAxios = () => {
+    Axios.defaults.headers.common['Authorization'] = '';
+};

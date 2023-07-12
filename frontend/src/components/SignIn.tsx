@@ -14,6 +14,7 @@ import { LoadingButton } from '@mui/lab';
 import { setToken } from '../helpers/setToken';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { userSlice } from '../store/reducers/UserSlice';
+import { setTokenAxios } from '../helpers/Axios';
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -85,10 +86,6 @@ const SignIn = () => {
         return counterErrors;
     };
 
-    const redirectToHome = () => {
-        return navigate('/');
-    };
-
     const submitHandle = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -114,6 +111,7 @@ const SignIn = () => {
                 const { user, token } = data;
 
                 setToken(token);
+                setTokenAxios(token);
 
                 dispatch(
                     setUser({
@@ -121,8 +119,9 @@ const SignIn = () => {
                         isLoggedIn: true,
                     })
                 );
+                console.log('here');
 
-                redirectToHome();
+                return navigate('/');
             } catch (e: any) {
                 setNetworkState({
                     loading: false,

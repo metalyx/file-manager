@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { unsetToken } from '../helpers/unsetToken';
+import { unsetTokenAxios } from '../helpers/Axios';
 import { useAppDispatch } from '../hooks/redux';
 import { userSlice } from '../store/reducers/UserSlice';
 import { useNavigate } from 'react-router-dom';
@@ -11,11 +13,14 @@ const Logout = () => {
     const logoutHandle = () => {
         dispatch(unsetUser());
         unsetToken();
+        unsetTokenAxios();
 
-        return navigate('/signIn');
+        return navigate('/signIn', { replace: true });
     };
 
-    logoutHandle();
+    useEffect(() => {
+        logoutHandle();
+    }, []);
 
     return <></>;
 };
