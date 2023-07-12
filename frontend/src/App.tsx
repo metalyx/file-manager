@@ -12,7 +12,6 @@ import { setToken } from './helpers/setToken';
 import { unsetToken } from './helpers/unsetToken';
 import Main from './components/Main';
 import DirectFile from './components/DirectFile';
-import NotFound from './components/NotFound';
 import Logout from './components/Logout';
 
 function App() {
