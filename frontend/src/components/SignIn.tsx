@@ -128,7 +128,7 @@ const SignIn = () => {
                     loading: false,
                     success: false,
                 });
-                console.log(e.response.data.message);
+
                 setValidationErrors({
                     ...validationErrors,
                     network: e.response.data.message,

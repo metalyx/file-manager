@@ -127,7 +127,6 @@ const Main = () => {
                     isSuccess: true,
                 });
             } catch (e: any) {
-                console.log(e);
                 let error = 'Server error, try again later...';
 
                 if (typeof e?.response?.data?.message === 'string') {

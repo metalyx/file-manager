@@ -14,9 +14,16 @@ export const downloadFiles = async (file: iFile) => {
             }
 
             buffer = data.buffer;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            return;
+
+            let error = 'Server Error';
+
+            if (typeof e?.response?.data?.message === 'string') {
+                error = e.response.data.message;
+            }
+
+            return error;
         }
     }
 
@@ -25,4 +32,5 @@ export const downloadFiles = async (file: iFile) => {
     const fileData = new Blob([byteArray], { type: mimetype });
 
     saveAs(fileData, originalname);
+    return '';
 };

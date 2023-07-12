@@ -189,9 +189,13 @@ router.get('/buffer/:fileId', async (req, res) => {
         }
 
         if (!file.public) {
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req?.headers?.authorization?.split(' ')[1];
             if (!token) {
-                return res.status(401).json({ message: 'Auth error' });
+                return res
+                    .status(401)
+                    .json({
+                        message: `You don't have permission to download this file.`,
+                    });
             }
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;
