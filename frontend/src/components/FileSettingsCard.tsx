@@ -135,7 +135,7 @@ const FileSettingsCard: React.FC<iFileSettingsCard> = ({ fileId }) => {
                                             textDecoration: 'underline',
                                         }}
                                     >
-                                        {`${BASE_FRONTEND_URL}/files/${fileId}`}
+                                        {`${window.location.hostname}/files/${fileId}`}
                                     </Link>
                                 }
                                 secondary='Direct link to this file'
