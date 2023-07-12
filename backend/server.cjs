@@ -6,7 +6,7 @@ const cors = require('cors');
 const authRouter = require('./routes/auth.routes.cjs');
 const fileRouter = require('./routes/file.routes.cjs');
 
-dotenv.config({ path: __dirname + '/.env' });
+dotenv.config({ path: '../.env' });
 
 const PORT = 5000;
 const app = express();
