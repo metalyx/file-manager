@@ -17,7 +17,6 @@ import { Axios } from '../helpers/Axios';
 import { fileSlice } from '../store/reducers/FileSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { Link } from 'react-router-dom';
-import { BASE_FRONTEND_URL } from '../constants';
 
 interface iFileSettingsCard {
     fileId: iFile['_id'];

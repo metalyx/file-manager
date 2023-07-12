@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -10,6 +11,9 @@ dotenv.config({ path: __dirname + '/.env' });
 const PORT = 5000;
 const app = express();
 
+// const __fname = fileURLToPath(import.meta.url);
+// const dir = dirname(__fname);
+
 app.use(cors());
 app.use(express.json());
 
@@ -17,6 +21,12 @@ app.use(express.static('build_frontend'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/files', fileRouter);
+
+app.get('/*', function (req, res) {
+    res.sendFile('index.html', {
+        root: path.join(__dirname, './build_frontend'),
+    });
+});
 
 const start = async () => {
     try {
