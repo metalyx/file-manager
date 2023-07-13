@@ -2,6 +2,8 @@
 
 This is File Manager App. You can use it like simple version of Google Drive or Dropbox. Just create account and upload your files.
 
+Demo link: https://file-manager-5ug7.onrender.com
+
 ## Features
 
 1. **Login, Authorization, Registration**<br>I used JWT to perform generating token and protecting routes. As well as protecting your files.
